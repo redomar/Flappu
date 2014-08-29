@@ -1,5 +1,7 @@
 package com.redomar.flappu;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
@@ -15,6 +17,17 @@ public class Main implements Runnable{
 
 	private boolean running = false;
 	private Thread thread;
+	
+	/**
+	 * @author Redomar
+	 */
+	
+	private void init(){
+		String version = glGetString(GL_VERSION); //This will request OpenGL version as a string.
+		System.out.println("OpenGL: "+ version);
+		
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f); //This sets clear colour to white.
+	}
 
 	public void start(){
 		running = true;
@@ -45,7 +58,11 @@ public class Main implements Runnable{
 			e.printStackTrace();
 		}
 		
+		init();
+		
 		while(running){
+			render();
+			
 			// Updates the display every tick.
 			Display.update();
 			if(Display.isCloseRequested()){
@@ -55,6 +72,10 @@ public class Main implements Runnable{
 		
 		// Unloads the display from memory and closes the window.
 		Display.destroy();
+	}
+	
+	private void render(){
+		glClear(GL_COLOR_BUFFER_BIT); //This clears the screen to the clear colour we set as white.
 	}
 
 	public static void main(String[] args) {
