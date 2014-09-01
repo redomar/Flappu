@@ -19,29 +19,37 @@ public class LoadTextures {
 		texture = load(path);
 	}
 	
+	/**
+	 * Loads Textures from a file and then obtains colour data.
+	 * Returns texture data.
+	 */
 	private int load(String path){
 		int[] pixels = null;
 		try {
-			BufferedImage image = ImageIO.read(new FileInputStream(path));
+			BufferedImage image = ImageIO.read(new FileInputStream(path)); // Loads the images in a buffer
 			width = image.getWidth();
 			height = image.getHeight();
 			pixels = new int[width * height];
-			image.getRGB(0, 0, width, height, pixels, 0, width);
+			image.getRGB(0, 0, width, height, pixels, 0, width); //Obtains the colours of each pixels as ARGB
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		int[] data = convertARGBtoRGBA(width, height, pixels);
 		
-		int gentex = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, gentex);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		int gentex = glGenTextures(); // Sets a new texture
+		glBindTexture(GL_TEXTURE_2D, gentex); // Selects texture to be modified
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // Disables anti-aliasing
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, LoadBuffers.createIntBuffer(data));
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, 0); // De-selects the texture, texture cannot be modified.
 		return gentex;
 	}
 	
+	/**
+	 * converts the standard ARGB format to a RGBA format which OpenGL requires.
+	 * @return Int[] array
+	 */
 	private int[] convertARGBtoRGBA(int width, int height, int[] pixels){
 		int[] data = new int[width * height];
 		for (int i = 0; i < width; i++){
